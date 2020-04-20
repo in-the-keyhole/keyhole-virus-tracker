@@ -1,0 +1,49 @@
+{
+  "name": "uilab",
+  "version": "1.0.0",
+  "description": "A balance-transfer example node program to demonstrate using node.js SDK APIs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fabric-client sample app",
+    "khs lab blockchain",
+    "v1.0 fabric nodesdk sample"
+  ],
+  "engines": {
+    "node": ">=6.9.5 <7.0",
+    "npm": ">=3.10.10 <4.0"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.3",
+    "d3": "^5.5.0",
+    "express": "^4.15.2",
+    "express-bearer-token": "^2.1.0",
+    "express-jwt": "^5.1.0",
+    "express-session": "^1.15.2",
+    "fabric-ca-client": "^1.0.0",
+    "fabric-client": "1.2.1",
+    "fs-extra": "^2.0.0",
+    "jsonwebtoken": "^7.3.0",
+    "log4js": "^0.6.38",
+    "react": "^15.6.1",
+    "react-bar-chart": "^0.1.2",
+    "react-bootstrap": "^0.31.0",
+    "react-bootstrap-table": "^3.5.1",
+    "react-confirm-alert": "^1.0.7",
+    "react-d3-basic": "^1.6.11",
+    "react-dom": "^15.6.1",
+    "react-dropzone": "^4.1.2",
+    "react-fileupload": "^2.4.0",
+    "react-radio-buttons": "^1.2.2",
+    "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.1",
+    "react-scripts": "^1.0.8",
+    "react-upload-file": "^2.0.0-beta.6",
+    "react-validation": "^3.0.7"
+  }
+}

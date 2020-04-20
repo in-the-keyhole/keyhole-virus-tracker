@@ -1,0 +1,15 @@
+{
+   "host":"localhost",
+   "port":"4000",
+   "jwt_expiretime": "36000",
+   "channelName":"lab",
+   "CC_SRC_PATH":"./orderer/artifacts",
+   "keyValueStore":"./hfc-key-store",
+   "eventWaitTime":"30000",
+   "admins":[
+      {
+         "username":"admin",
+         "secret":"adminpw"
+      }
+   ]
+}
