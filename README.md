@@ -1,11 +1,13 @@
-# KHS Lab Results Blockchain
+# Keyhole Virus Tracker Blockchain
 
-This project implements a HyperLedger blockchain network with chaincode that manages a ledger of COVID 19 and Influenza Virus tests. The chaincode implements functions to create and retrieve Influenza test results.  
+This project implements a HyperLedger blockchain network with chaincode that manages a ledger of COVID 19 and Influenza Virus lab tests. The chaincode implements functions to create and retrieve Influenza test results.  
+
+It also references a ReactJS client project and supporting API gateway project that provides a user interface to interact with a deployed blockchain.
 
 The instructions will start a Hyperledger network locally on a Linux/Unix/MacOs/Windows operating system and then invoke and access the blockchain chaincode in the following ways:
 
 ##### * Start the HyperLedger Orderer, Certificate Authority (CA), and Peer Nodes; create channel "mychannel"; and install chaincode
-##### * Interact with Chaincode from a ReactJS/Node Web Application 
+##### * Interact with Chaincode from a ReactJS/Node Web Application or CLI and Node JavaScript Commands.
 ##### * Execute Chaincode and Unit tests from CLI 
 
 ## Table of Contents
