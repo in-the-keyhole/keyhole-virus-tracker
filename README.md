@@ -13,7 +13,7 @@ The instructions will start a Hyperledger network locally on a Linux/Unix/MacOs/
 ## Table of Contents
 
 - [Table of Contents](#table-of-contents)
-- [Byzantine Flu Full Stack Setup](#byzantine-flu-full-stack-setup)
+- [Keyhole Virus Tracker Stack Setup](#byzantine-flu-full-stack-setup)
 - [Installing and Running](#installing-and-running)
 - [Start the Network](#start-the-network)
 - [Execute Chaincode on Network Using Network CLI](#execute-chaincode-on-network-using-network-cli)
@@ -24,8 +24,9 @@ The instructions will start a Hyperledger network locally on a Linux/Unix/MacOs/
 * [XCode](https://apps.apple.com/us/app/xcode/id497799835?mt=12) or type `xcode-select --install` - **Note: for OSX Only!**
 
 ----
-## Byzantine Flu Full Stack Setup
+## Keyhole Virus Stracker Full Stack Setup
 
+Follow these steps to get a ReactJS UI and API Gateway for the blockcchain installed and running locally.
 
 #### Setup Steps
 1. **-> (You are here)** Set up and run Byzantine Hyperledger Fabric
@@ -34,7 +35,7 @@ The instructions will start a Hyperledger network locally on a Linux/Unix/MacOs/
 
     - The communication gateway to the Byzantine Hyperledger Fabric runtime
 
-3. Set up and run the Reactjs UI:  https://github.com/in-the-keyhole/byzantine-flu-ui
+3. Set up and run the Reactjs UI:  https://github.com/in-the-keyhole/keyhole-virus-tracker-ui
 
     - A website containing a map displaying the locations and concentrations of reported flu samples
 
@@ -124,9 +125,7 @@ If the network is not up, start it
 ```
 $ ./start.sh 
 ```
-To run the UI, follow the setup steps in https://github.com/in-the-keyhole/byzantine-flu-ui
-
-BWF note: I haven't verified below here
+To run the UI, follow the setup steps in https://github.com/in-the-keyhole/keyhole-virus-tracker-ui
 
 
 # Compiling and Unit Testing Go Chaincode with the Development CLI 

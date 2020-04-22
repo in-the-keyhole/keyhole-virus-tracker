@@ -61,6 +61,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.queryStateResults(APIstub, args[0])
 	} else if function == "createLab" {
 		return s.createLab(APIstub, args)
+	} else if function == "recovered" {
+		return s.recovered(APIstub, args)
 	}
 
 	fmt.Println("args ", args)
@@ -223,6 +225,32 @@ func (s *SmartContract) queryStateResults(APIstub shim.ChaincodeStubInterface, s
 	fmt.Printf("- Query KS Labs:\n%s\n", buffer.String())
 
 	return shim.Success(buffer.Bytes())
+}
+
+func (s *SmartContract) recovered(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1 ID")
+	}
+
+	id := args[0]
+
+	byt, err := APIstub.GetState(id)
+
+	if err != nil {
+		return shim.Error("Lab ID " + id + " not found")
+	}
+	var labResult LabResult
+	if err := json.Unmarshal(byt, &labResult); err != nil {
+		panic(err)
+	}
+
+	// change status to recovered
+	labResult.Source = "Recovered"
+	labAsBytes, _ := json.Marshal(labResult)
+	APIstub.PutState(id, labAsBytes)
+
+	return shim.Success([]byte("Lab Found" + labResult.Status))
 }
 
 func (s *SmartContract) createLab(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
