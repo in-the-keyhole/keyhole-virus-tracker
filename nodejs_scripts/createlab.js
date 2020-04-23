@@ -51,8 +51,8 @@ Promise.resolve().then(() => {
     var request = {
         targets: targets,
         chaincodeId: options.chaincode_id,
-        fcn: 'initLedger',
-        args: [],
+        fcn: 'createLab',
+        args: ["F","57","Topeka","Shawnee","KS","Mouth Swab","100","2018:07:03:10:00", "questlabs.com","active" ],
         chainId: options.channel_id,
         txId: tx_id
     };
@@ -65,6 +65,7 @@ Promise.resolve().then(() => {
     if (proposalResponses && proposalResponses[0].response &&
         proposalResponses[0].response.status === 200) {
         isProposalGood = true;
+        console.log(results);
         console.log('transaction proposal was good');
     } else {
         console.error('transaction proposal was bad');
@@ -79,6 +80,7 @@ Promise.resolve().then(() => {
             proposal: proposal,
             header: header
         };
+
         // set the transaction listener and set a timeout of 30sec
         // if the transaction did not get committed within the timeout period,
         // fail the test
@@ -112,7 +114,7 @@ Promise.resolve().then(() => {
                 } else {
                     console.log(
                         'The transaction has been committed on peer ' );
-                        console.log(code);
+                        console.log(tx);
                        // eh._ep._endpoint.addr);
                     resolve();
                 }
@@ -144,6 +146,7 @@ Promise.resolve().then(() => {
 }).then((response) => {
     if (response.status === 'SUCCESS') {
         console.log('Successfully sent transaction to the orderer.');
+        console.log(response);
         return tx_id.getTransactionID();
     } else {
         console.error('Failed to order the transaction. Error code: ' + response.status);

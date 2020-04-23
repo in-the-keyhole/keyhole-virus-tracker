@@ -37,12 +37,12 @@ Promise.resolve().then(() => {
     return;
 }).then(() => {
     console.log("Query TX");
-    let tx =  "1769ed122b0abb58e9a0661597f6e1c471a4937c08daca257d7ea939e415504c"
+    let tx =  "fef7952cc9b140e18fcfbe4c108c6ff169e3a4754fa629906db2a1e67f576dbe"
     return channel.queryTransaction(tx,peer,false, false);
 }).then((query_responses) => {
     console.log("returned from query");
  // console.log(query_responses.transactionEnvelope.payload.data.actions[0].payload.action);
-    console.log(JSON.stringify(query_responses))
+    console.log( query_responses )
 }).catch((err) => {
     console.error("Caught Error", err);
 });
