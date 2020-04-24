@@ -16,9 +16,8 @@ The instructions will start a Hyperledger network locally on a Linux/Unix/MacOs/
 - [Keyhole Virus Tracker Stack Setup](#byzantine-flu-full-stack-setup)
 - [Installing and Running](#installing-and-running)
 - [Start the Network](#start-the-network)
-- [Execute Chaincode on Network Using Network CLI]
-(#execute-chaincode-on-network-using-network-cli)
-- [# NodeJS Scripts](#nodejs-scripts)
+- [Execute Chaincode on Network Using Network CLI](#execute-chaincode-on-network-using-network-cli)
+- [NodeJS Scripts](#nodejs-scripts)
 
 ## Requirements
 * [Node](https://nodejs.org/en/download/) 8.9.x to 10.x - **Note: We have seen an issue with node-gyp when using > 10.x**
