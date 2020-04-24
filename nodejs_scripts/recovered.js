@@ -52,7 +52,7 @@ Promise.resolve().then(() => {
         targets: targets,
         chaincodeId: options.chaincode_id,
         fcn: 'recovered',
-        args: ['LAB1587475000418599900'],
+        args: ['abclabs.comdf2f97b9-46ee-ab5f-1748-bcd6be0c29e165d0b87d-ab68-748a-dd96-fdd56c0b555c'],
         chainId: options.channel_id,
         txId: tx_id
     };

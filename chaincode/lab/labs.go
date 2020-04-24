@@ -7,14 +7,33 @@ package main
 import (
 	//	"bytes"
 	"bytes"
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
-	"strconv"
-	"time"
+	"log"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	sc "github.com/hyperledger/fabric/protos/peer"
 )
+
+func IDGen(lab string) string {
+
+	//nano := time.Now().UnixNano()
+	//snano := strconv.FormatInt(nano, 10)
+	//id := sha256.Sum256([]byte(snano + lab))
+	b := make([]byte, 16)
+	_, err := rand.Read(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	uuid := fmt.Sprintf("%x-%x-%x-%x-%x",
+		b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+	// fmt.Println(uuid)
+
+	//return string(id[:])
+	return uuid
+
+}
 
 // Define the Smart Contract structure
 type SmartContract struct {
@@ -22,6 +41,7 @@ type SmartContract struct {
 
 // Define the LabResult.  Structure tags are used by encoding/json library
 type LabResult struct {
+	ID       string `json:id`
 	Status   string `json:status`
 	Source   string `json:"source"`
 	Gender   string `json:"gender"`
@@ -62,7 +82,19 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	} else if function == "createLab" {
 		return s.createLab(APIstub, args)
 	} else if function == "recovered" {
-		return s.recovered(APIstub, args)
+		if len(args) != 1 {
+			return shim.Error("Incorrect number of arguments. Expecting 1 UUID")
+		}
+		return s.changeStatus(APIstub, args[0], "recovered")
+	} else if function == "deceased" {
+		if len(args) != 1 {
+			return shim.Error("Incorrect number of arguments. Expecting 1 UUID")
+		}
+		return s.changeStatus(APIstub, args[0], "deceased")
+	} else if function == "queryById" {
+
+		return s.queryByID(APIstub, args)
+
 	}
 
 	fmt.Println("args ", args)
@@ -73,19 +105,21 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
 
 	entries := []LabResult{
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2019-08-01 10:00", Age: "33", TestType: "nasal swab", Result: "A", City: "Leawood", County: "Johnson", State: "KS", Status: "active"},
-		LabResult{Source: "questlabs.com", Gender: "F", DateTime: "2019-08-30 10:00", Age: "40", TestType: "nasal swab", Result: "B", City: "Leawood", County: "Johnson", State: "KS", Status: "deceased"},
-		LabResult{Source: "abclabs.com", Gender: "M", DateTime: "2019-09-03 10:00", Age: "55", TestType: "nasal swab", Result: "A", City: "Georgetown", County: "Georgetown", State: "SC", Status: "recovered"},
-		LabResult{Source: "abclabs.com", Gender: "M", DateTime: "2019-09:04 10:00", Age: "57", TestType: "mouth swab", Result: "NEGATIVE", City: "St. Louis", County: "St. Louis", State: "MO", Status: "none"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2019-09-015 10:00", Age: "75", TestType: "mouth swab", Result: "NEGATIVE", City: "Everglades City", County: "Collier", State: "FL", Status: "none"},
+		LabResult{ID: IDGen("questlabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2019-08-01 10:00", Age: "33", TestType: "nasal swab", Result: "A", City: "Leawood", County: "Johnson", State: "KS", Status: "active"},
+		LabResult{ID: IDGen("questlabs.com"), Source: "questlabs.com", Gender: "F", DateTime: "2019-08-30 10:00", Age: "40", TestType: "nasal swab", Result: "B", City: "Leawood", County: "Johnson", State: "KS", Status: "deceased"},
+		LabResult{ID: IDGen("questlabs.com"), Source: "abclabs.com", Gender: "M", DateTime: "2019-09-03 10:00", Age: "55", TestType: "nasal swab", Result: "A", City: "Georgetown", County: "Georgetown", State: "SC", Status: "recovered"},
+		LabResult{ID: IDGen("questlabs.com"), Source: "questlabs.com", Gender: "F", DateTime: "2019-08-30 10:00", Age: "40", TestType: "nasal swab", Result: "B", City: "Leawood", County: "Johnson", State: "KS", Status: "deceased"},
+		LabResult{ID: IDGen("questlabs.com"), Source: "questlabs.com", Gender: "F", DateTime: "2019-08-30 10:00", Age: "40", TestType: "nasal swab", Result: "B", City: "Leawood", County: "Johnson", State: "KS", Status: "deceased"},
+		LabResult{ID: IDGen("questlabs.com"), Source: "questlabs.com", Gender: "F", DateTime: "2019-08-30 10:00", Age: "40", TestType: "nasal swab", Result: "B", City: "Leawood", County: "Johnson", State: "KS", Status: "deceased"},
+		LabResult{ID: IDGen("abclabs.com"), Source: "abclabs.com", Gender: "M", DateTime: "2019-09:04 10:00", Age: "57", TestType: "mouth swab", Result: "NEGATIVE", City: "St. Louis", County: "St. Louis", State: "MO", Status: "none"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2019-09-015 10:00", Age: "75", TestType: "mouth swab", Result: "NEGATIVE", City: "Everglades City", County: "Collier", State: "FL", Status: "none"},
 	}
 
 	i := 0
 	for i < len(entries) {
 		fmt.Println("i is ", i)
 		tsAsBytes, _ := json.Marshal(entries[i])
-		key := time.Now().UnixNano()
-		APIstub.PutState("LAB"+strconv.FormatInt(key, 10), tsAsBytes)
+		APIstub.PutState(IDGen(entries[i].ID), tsAsBytes)
 		fmt.Println("Added", entries[i])
 		i = i + 1
 	}
@@ -95,44 +129,43 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 
 func (s *SmartContract) initCovidLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
 	entries := []LabResult{
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-01-03 10:00", Age: "25", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Albany", County: "Albany", State: "NY", Status: "active"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-01-03 10:00", Age: "35", TestType: "sputum sample", Result: "NEGATIVE", City: "Las Vegas", County: "Clark", State: "NV", Status: "None"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-01-03 10:00", Age: "45", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Hollwood", County: "Los Angeles", State: "CA", Status: "active"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-01-05 10:00", Age: "47", TestType: "sputum sample", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "deceased"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-01-05 10:00", Age: "55", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "recovered"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-01-13 10:00", Age: "60", TestType: "sputum sample", Result: "NEGATIVE", City: "Los Angeles", County: "Clark", State: "NV", Status: "none"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-01-13 10:00", Age: "62", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Hollwood", County: "Los Angeles", State: "CA", Status: "active"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-01-23 10:00", Age: "64", TestType: "sputum sample", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "deceased"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-01-23 10:00", Age: "40", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "recovered"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-01-23 10:00", Age: "41", TestType: "sputum sample", Result: "NEGATIVE", City: "Los Angeles", County: "Clark", State: "NV", Status: "none"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-01-23 10:00", Age: "42", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Hollwood", County: "Los Angeles", State: "CA", Status: "active"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-01-23 10:00", Age: "43", TestType: "sputum sample", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "active"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-01-23 10:00", Age: "47", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "active"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-01-23 10:00", Age: "80", TestType: "sputum sample", Result: "NEGATIVE", City: "Los Angeles", County: "Clark", State: "NV", Status: "none"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-02-03 10:00", Age: "81", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Hollwood", County: "Los Angeles", State: "CA", Status: "deceased"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-02-03 10:00", Age: "82", TestType: "sputum sample", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "deceased"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-02-03 10:00", Age: "85", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "recovered"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-02-13 10:00", Age: "15", TestType: "sputum sample", Result: "NEGATIVE", City: "Los Angeles", County: "Clark", State: "NV", Status: "none"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-02-13 10:00", Age: "28", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Boise", County: "Boise", State: "ID", Status: "active"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-02-15 10:00", Age: "29", TestType: "sputum sample", Result: "NEGATIVE", City: "Batton Rouge", County: "Batton", State: "LA", Status: "none"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-02-15 15:00", Age: "30", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Isle", County: "Isle", State: "ME", Status: "deceased"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-02-20 10:00", Age: "31", TestType: "sputum sample", Result: "NEGATIVE", City: "Dallas", County: "Dallas", State: "TX", Status: "none"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-02-20 10:00", Age: "38", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Austin", County: "Austin", State: "TX", Status: "active"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-02-20 10:00", Age: "40", TestType: "sputum sample", Result: "NEGATIVE", City: "St. Louis", County: "St. Louis", State: "MO", Status: "negative"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-02-20 10:00", Age: "50", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Lincoln", County: "Lincoln", State: "NE", Status: "recovered"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-02-20 10:00", Age: "59", TestType: "sputum sample", Result: "NEGATIVE", City: "Banks", County: "Banks", State: "NH", Status: "none"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-02-20 10:00", Age: "60", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Walter", County: "Walter", State: "MT", Status: "active"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-02-20 10:00", Age: "44", TestType: "sputum sample", Result: "NEGATIVE", City: "Aspen", County: "Aspen", State: "CO", Status: "none"},
-		LabResult{Source: "questlabs.com", Gender: "M", DateTime: "2020-02-20 10:00", Age: "45", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Walter", County: "Walter", State: "NM", Status: "deceased"},
-		LabResult{Source: "abclabs.com", Gender: "F", DateTime: "2020-02-20 10:00", Age: "55", TestType: "sputum sample", Result: "NEGATIVE", City: "Norse", County: "Clark", State: "SD", Status: "none"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-01-03 10:00", Age: "25", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Albany", County: "Albany", State: "NY", Status: "active"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-01-03 10:00", Age: "35", TestType: "sputum sample", Result: "NEGATIVE", City: "Las Vegas", County: "Clark", State: "NV", Status: "None"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-01-03 10:00", Age: "45", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Hollwood", County: "Los Angeles", State: "CA", Status: "active"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-01-05 10:00", Age: "47", TestType: "sputum sample", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "deceased"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-01-05 10:00", Age: "55", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "recovered"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-01-13 10:00", Age: "60", TestType: "sputum sample", Result: "NEGATIVE", City: "Los Angeles", County: "Clark", State: "NV", Status: "none"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-01-13 10:00", Age: "62", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Hollwood", County: "Los Angeles", State: "CA", Status: "active"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-01-23 10:00", Age: "64", TestType: "sputum sample", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "deceased"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-01-23 10:00", Age: "40", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "recovered"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-01-23 10:00", Age: "41", TestType: "sputum sample", Result: "NEGATIVE", City: "Los Angeles", County: "Clark", State: "NV", Status: "none"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-01-23 10:00", Age: "42", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Hollwood", County: "Los Angeles", State: "CA", Status: "active"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-01-23 10:00", Age: "43", TestType: "sputum sample", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "active"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-01-23 10:00", Age: "47", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "active"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-01-23 10:00", Age: "80", TestType: "sputum sample", Result: "NEGATIVE", City: "Los Angeles", County: "Clark", State: "NV", Status: "none"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-02-03 10:00", Age: "81", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Hollwood", County: "Los Angeles", State: "CA", Status: "deceased"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-02-03 10:00", Age: "82", TestType: "sputum sample", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "deceased"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-02-03 10:00", Age: "85", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Los Angeles", County: "Los Angeles", State: "CA", Status: "recovered"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-02-13 10:00", Age: "15", TestType: "sputum sample", Result: "NEGATIVE", City: "Los Angeles", County: "Clark", State: "NV", Status: "none"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-02-13 10:00", Age: "28", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Boise", County: "Boise", State: "ID", Status: "active"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-02-15 10:00", Age: "29", TestType: "sputum sample", Result: "NEGATIVE", City: "Batton Rouge", County: "Batton", State: "LA", Status: "none"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-02-15 15:00", Age: "30", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Isle", County: "Isle", State: "ME", Status: "deceased"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-02-20 10:00", Age: "31", TestType: "sputum sample", Result: "NEGATIVE", City: "Dallas", County: "Dallas", State: "TX", Status: "none"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-02-20 10:00", Age: "38", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Austin", County: "Austin", State: "TX", Status: "active"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-02-20 10:00", Age: "40", TestType: "sputum sample", Result: "NEGATIVE", City: "St. Louis", County: "St. Louis", State: "MO", Status: "negative"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-02-20 10:00", Age: "50", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Lincoln", County: "Lincoln", State: "NE", Status: "recovered"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-02-20 10:00", Age: "59", TestType: "sputum sample", Result: "NEGATIVE", City: "Banks", County: "Banks", State: "NH", Status: "none"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-02-20 10:00", Age: "60", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Walter", County: "Walter", State: "MT", Status: "active"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-02-20 10:00", Age: "44", TestType: "sputum sample", Result: "NEGATIVE", City: "Aspen", County: "Aspen", State: "CO", Status: "none"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "questlabs.com", Gender: "M", DateTime: "2020-02-20 10:00", Age: "45", TestType: "nasopharyngeal swab", Result: "POSITIVE", City: "Walter", County: "Walter", State: "NM", Status: "deceased"},
+		LabResult{ID: IDGen("abslabs.com"), Source: "abclabs.com", Gender: "F", DateTime: "2020-02-20 10:00", Age: "55", TestType: "sputum sample", Result: "NEGATIVE", City: "Norse", County: "Clark", State: "SD", Status: "none"},
 	}
 
 	i := 0
 	for i < len(entries) {
 		fmt.Println("i is ", i)
 		tsAsBytes, _ := json.Marshal(entries[i])
-		key := time.Now().UnixNano()
-		APIstub.PutState("LAB"+strconv.FormatInt(key, 10), tsAsBytes)
+		APIstub.PutState(entries[i].ID, tsAsBytes)
 		fmt.Println("Added", entries[i])
 		i = i + 1
 	}
@@ -183,6 +216,23 @@ func (s *SmartContract) queryAllEntries(APIstub shim.ChaincodeStubInterface) sc.
 	return shim.Success(buffer.Bytes())
 }
 
+func (s *SmartContract) queryByID(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1 UUID")
+	}
+
+	key := args[0]
+
+	result, err := APIstub.GetState(key)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	return shim.Success(result)
+
+}
+
 func (s *SmartContract) queryStateResults(APIstub shim.ChaincodeStubInterface, state string) sc.Response {
 
 	startKey := ""
@@ -227,13 +277,7 @@ func (s *SmartContract) queryStateResults(APIstub shim.ChaincodeStubInterface, s
 	return shim.Success(buffer.Bytes())
 }
 
-func (s *SmartContract) recovered(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
-
-	if len(args) != 1 {
-		return shim.Error("Incorrect number of arguments. Expecting 1 ID")
-	}
-
-	id := args[0]
+func (s *SmartContract) changeStatus(APIstub shim.ChaincodeStubInterface, id string, status string) sc.Response {
 
 	byt, err := APIstub.GetState(id)
 
@@ -246,11 +290,11 @@ func (s *SmartContract) recovered(APIstub shim.ChaincodeStubInterface, args []st
 	}
 
 	// change status to recovered
-	labResult.Source = "Recovered"
+	labResult.Status = status
 	labAsBytes, _ := json.Marshal(labResult)
 	APIstub.PutState(id, labAsBytes)
 
-	return shim.Success([]byte("Lab Found" + labResult.Status))
+	return shim.Success([]byte("Lab Found Marked as " + labResult.Status))
 }
 
 func (s *SmartContract) createLab(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -267,11 +311,10 @@ func (s *SmartContract) createLab(APIstub shim.ChaincodeStubInterface, args []st
 
 	}
 
+	id := IDGen(args[8])
 	var labResult = LabResult{Gender: args[0], Age: args[1], City: args[2], County: args[3], State: args[4], TestType: args[5], Result: args[6], DateTime: args[7], Source: args[8], Status: status}
-
-	key := time.Now().UnixNano()
 	labAsBytes, _ := json.Marshal(labResult)
-	APIstub.PutState("LAB"+strconv.FormatInt(key, 10), labAsBytes)
+	APIstub.PutState(id, labAsBytes)
 
 	fmt.Println("*** Added Labs")
 	fmt.Println(APIstub.GetCreator())

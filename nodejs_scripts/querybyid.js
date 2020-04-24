@@ -17,7 +17,15 @@ var options = {
 
 var channel = {};
 var client = null;
-var peer = null;
+ 
+if (process.argv.length < 3) {
+    console.log("*** Please specify a UUID to query")
+    return
+}
+
+
+var key = process.argv[2]
+
 Promise.resolve().then(() => {
     console.log("Create a client and set the wallet location");
     client = new hfc();
@@ -32,17 +40,33 @@ Promise.resolve().then(() => {
         console.error("User not defined, or not enrolled - error");
     }
     channel = client.newChannel(options.channel_id);
-    peer = client.newPeer(options.network_url);
-    channel.addPeer(peer);
+    channel.addPeer(client.newPeer(options.network_url));
     return;
 }).then(() => {
-    console.log("Query TX");
-    let tx =  "fef7952cc9b140e18fcfbe4c108c6ff169e3a4754fa629906db2a1e67f576dbe"
-    return channel.queryTransaction(tx,peer,false, false);
+    console.log("Make query");
+    var transaction_id = client.newTransactionID();
+    console.log("Assigning transaction_id: ", transaction_id._transaction_id);
+
+    // queryCar - requires 1 argument, ex: args: ['CAR4'],
+    // queryAllCars - requires no arguments , ex: args: [''],
+    const request = {
+        chaincodeId: options.chaincode_id,
+        txId: transaction_id,
+        fcn: 'queryById',
+        args: [key]
+    };
+    return channel.queryByChaincode(request);
 }).then((query_responses) => {
     console.log("returned from query");
- // console.log(query_responses.transactionEnvelope.payload.data.actions[0].payload.action);
-    console.log( query_responses )
+    if (!query_responses.length) {
+        console.log("No payloads were returned from query");
+    } else {
+        console.log("Query result count = ", query_responses.length)
+    }
+    if (query_responses[0] instanceof Error) {
+        console.error("error from query = ", query_responses[0]);
+    }
+    console.log("Response is ", query_responses[0].toString());
 }).catch((err) => {
     console.error("Caught Error", err);
 });
