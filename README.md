@@ -124,7 +124,7 @@ verify the output ends  with something similar to
 
 If the network is not up, start it
 ```
-$ ./start.sh 
+    $ ./start.sh 
 ```
 To run the UI, follow the setup steps in https://github.com/in-the-keyhole/keyhole-virus-tracker-ui
 
@@ -136,24 +136,24 @@ To run the UI, follow the setup steps in https://github.com/in-the-keyhole/keyho
 Here's how to create a lab in the Influenza or Covid lab Channels script can be run 
 
 ```
-$ node createLab.js
+    $ node createLab.js
 ```
 
 Querying all labs for a channel can be done with this script 
 
 ```
-$ node queryAllLabs.js
+    $ node queryAllLabs.js
 ```
 
 A single lab can be queried by specifying a lab UUID with this script 
 
 ```
-$ node queryById 4634250f-e5ac-d7f0-10d0-813ef6282792
+    $ node queryById 4634250f-e5ac-d7f0-10d0-813ef6282792
 ```
 
 Change status for a lab to recovered 
 ```
-$ node recovered 4634250f-e5ac-d7f0-10d0-813ef6282792
+    $ node recovered 4634250f-e5ac-d7f0-10d0-813ef6282792
 ```
 
 
