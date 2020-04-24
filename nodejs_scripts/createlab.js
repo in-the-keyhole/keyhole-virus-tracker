@@ -91,9 +91,7 @@ Promise.resolve().then(() => {
        // eh.setPeerAddr(options.event_url);
         eh.connect(); 
 
-       // let eh = client.newEventHub();
-       // eh.setPeerAddr(options.event_url);
-        //eh.connect();
+    
 
         let txPromise = new Promise((resolve, reject) => {
             let handle = setTimeout(() => {

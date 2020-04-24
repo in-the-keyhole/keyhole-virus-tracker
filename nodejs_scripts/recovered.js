@@ -23,6 +23,15 @@ var client = null;
 var targets = [];
 var tx_id = null;
 var peerObj = null;
+
+
+if (process.argv.length < 3) {
+    console.log("*** Please specify a UUID to mark as recovered")
+    return
+}
+
+var key = process.argv[2];
+
 Promise.resolve().then(() => {
     console.log("Create a client and set the wallet location");
     client = new hfc();
@@ -52,7 +61,7 @@ Promise.resolve().then(() => {
         targets: targets,
         chaincodeId: options.chaincode_id,
         fcn: 'recovered',
-        args: ['abclabs.comdf2f97b9-46ee-ab5f-1748-bcd6be0c29e165d0b87d-ab68-748a-dd96-fdd56c0b555c'],
+        args: [key],
         chainId: options.channel_id,
         txId: tx_id
     };

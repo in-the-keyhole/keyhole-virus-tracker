@@ -16,7 +16,9 @@ The instructions will start a Hyperledger network locally on a Linux/Unix/MacOs/
 - [Keyhole Virus Tracker Stack Setup](#byzantine-flu-full-stack-setup)
 - [Installing and Running](#installing-and-running)
 - [Start the Network](#start-the-network)
-- [Execute Chaincode on Network Using Network CLI](#execute-chaincode-on-network-using-network-cli)
+- [Execute Chaincode on Network Using Network CLI]
+(#execute-chaincode-on-network-using-network-cli)
+- [# NodeJS Scripts](#nodejs-scripts)
 
 ## Requirements
 * [Node](https://nodejs.org/en/download/) 8.9.x to 10.x - **Note: We have seen an issue with node-gyp when using > 10.x**
@@ -104,7 +106,7 @@ If the script fails due to firewall blocking the ports:
 * Execute the `queryAllLabs` chaincode function with the following shell script:
 
 ```
-    $./executeQueryLabs.sh 
+    $./sh_scripts/executeQueryLabs.sh 
 ```
 This is a canned query. Verify the output ends with something similar to 
 ```
@@ -114,7 +116,7 @@ This is a canned query. Verify the output ends with something similar to
 * Execute the `createLab` chaincode function with the following shell script:
 
 ```
-    $./executeCreateLab.sh 
+    $./sh_scripts/executeCreateLab.sh 
 ```
 verify the output ends  with something similar to 
 ```
@@ -127,6 +129,32 @@ $ ./start.sh
 ```
 To run the UI, follow the setup steps in https://github.com/in-the-keyhole/keyhole-virus-tracker-ui
 
+# NodeJS Scripts 
+
+There are also Nodejs scripts defined in the `nodejs_scripts` folder. These scripts will use the fabric-node-sdk to invoke chaincode. You can create, retrieve, and change states of labs with the scripts. 
+
+Here's how to create a lab in the Influenza or Covid lab Channels script can be run 
+
+```
+$ node createLab.js
+```
+
+Querying all labs for a channel can be done with this script 
+
+```
+$ node queryAllLabs.js
+```
+
+A single lab can be queried by specifying a lab UUID with this script 
+
+```
+$ node queryById 4634250f-e5ac-d7f0-10d0-813ef6282792
+```
+
+Change status for a lab to recovered 
+```
+$ node recovered 4634250f-e5ac-d7f0-10d0-813ef6282792
+```
 
 # Compiling and Unit Testing Go Chaincode with the Development CLI 
 
