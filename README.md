@@ -128,9 +128,10 @@ $ ./start.sh
 ```
 To run the UI, follow the setup steps in https://github.com/in-the-keyhole/keyhole-virus-tracker-ui
 
+
 # NodeJS Scripts 
 
-There are also Nodejs scripts defined in the `nodejs_scripts` folder. These scripts will use the fabric-node-sdk to invoke chaincode. You can create, retrieve, and change states of labs with the scripts. 
+* There are also Nodejs scripts defined in the `nodejs_scripts` folder. These scripts will use the fabric-node-sdk to invoke chaincode. You can create, retrieve, and change states of labs with the scripts. 
 
 Here's how to create a lab in the Influenza or Covid lab Channels script can be run 
 
@@ -154,6 +155,7 @@ Change status for a lab to recovered
 ```
 $ node recovered 4634250f-e5ac-d7f0-10d0-813ef6282792
 ```
+
 
 # Compiling and Unit Testing Go Chaincode with the Development CLI 
 
