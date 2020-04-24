@@ -118,16 +118,16 @@ This is a canned query. Verify the output ends with something similar to
     $./sh_scripts/executeCreateLab.sh 
 ```
 verify the output ends  with something similar to 
-```
+
 [chaincodeCmd] chaincodeInvokeOrQuery -> DEBU 04f ESCC invoke result: version:1 response:<status:200 payload:"Lab Created"
 
-
 If the network is not up, start it
+
 ```
     $ ./start.sh 
 ```
-To run the UI, follow the setup steps in https://github.com/in-the-keyhole/keyhole-virus-tracker-ui
 
+To run the UI, follow the setup steps in https://github.com/in-the-keyhole/keyhole-virus-tracker-ui
 
 # NodeJS Scripts 
 
