@@ -1,10 +1,10 @@
 # Keyhole Virus Tracker Blockchain
 
-This project implements a HyperLedger blockchain network with chaincode that manages a ledger of COVID 19 and Influenza Virus lab tests. The chaincode implements functions to create and retrieve Influenza test results.  
+This project implements a HyperLedger blockchain network with chaincode that manages a ledger of COVID-19 and Influenza virus lab results. The chaincode implements functions to create and retrieve test results.  
 
-It also references a ReactJS client project and supporting API gateway project that provides a user interface to interact with a deployed blockchain.
+It also references a React client project and supporting API Gateway project that provides a user interface to interact with a deployed blockchain.
 
-The instructions will start a Hyperledger network locally on a Linux/Unix/MacOs/Windows operating system and then invoke and access the blockchain chaincode in the following ways:
+The instructions will start a Hyperledger network locally on a Linux, Unix, MacOS, or Windows operating system, and then invoke and access the blockchain chaincode in the following ways:
 
 ##### * Start the HyperLedger Orderer, Certificate Authority (CA), and Peer Nodes; create channel "mychannel"; and install chaincode
 ##### * Interact with Chaincode from a ReactJS/Node Web Application or CLI and Node JavaScript Commands.
@@ -13,7 +13,7 @@ The instructions will start a Hyperledger network locally on a Linux/Unix/MacOs/
 ## Table of Contents
 
 - [Table of Contents](#table-of-contents)
-- [Keyhole Virus Tracker Stack Setup](#byzantine-flu-full-stack-setup)
+- [Keyhole Virus Tracker Stack Setup](#keyhole-virus-tracker-full-stack-setup)
 - [Installing and Running](#installing-and-running)
 - [Start the Network](#start-the-network)
 - [Execute Chaincode on Network Using Network CLI](#execute-chaincode-on-network-using-network-cli)
@@ -25,26 +25,26 @@ The instructions will start a Hyperledger network locally on a Linux/Unix/MacOs/
 * [XCode](https://apps.apple.com/us/app/xcode/id497799835?mt=12) or type `xcode-select --install` - **Note: for OSX Only!**
 
 ----
-## Keyhole Virus Stracker Full Stack Setup
+## Keyhole Virus Tracker Full Stack Setup
 
-Follow these steps to get a ReactJS UI and API Gateway for the blockcchain installed and running locally.
+Follow these steps to get a React UI and API Gateway for the blockchain installed and running locally.
 
 #### Setup Steps
-1. **-> (You are here)** Set up and run Byzantine Hyperledger Fabric
+1. **-> (You are here)** Set up and run Keyhole Virus Tracker
 
-2. Set up and run the  API Gateway:  https://github.com/hyperledger-labs/keyhole-fabric-api-gateway
+2. Set up and run the Keyhole Fabric API Gateway:  https://github.com/hyperledger-labs/keyhole-fabric-api-gateway
 
-    - The communication gateway to the Byzantine Hyperledger Fabric runtime
+    - The communication gateway to the Keyhole Virus Tracker runtime
 
-3. Set up and run the Reactjs UI:  https://github.com/in-the-keyhole/keyhole-virus-tracker-ui
+3. Set up and run the React UI:  https://github.com/in-the-keyhole/keyhole-virus-tracker-ui
 
-    - A website containing a map displaying the locations and concentrations of reported flu samples
+    - A website containing a map displaying the locations and concentrations of reported virus samples
 
 
 #### Optional Steps:
-4. Hyperledger Brower:  https://github.com/in-the-keyhole/byzantine-browser
+4. Byzantine Browser:  https://github.com/in-the-keyhole/byzantine-browser
 
-    - A website showing the actual blockchain and the associated metadata 
+    - A open source analytics tool showing real-time visibility into transactions, metadata, and blocks as they are added to a Hyperledger Fabric network
 -----
 
 # Installing and Running 
@@ -85,7 +85,7 @@ $ npm install
 $ ./start.sh
 
 ```
-This starts the hyperledger fabric network, creates a channel, installs chaincode, and executes the chaincode to verify the network is up and running.
+This starts the Hyperledger Fabric network, creates a channel, installs chaincode, and executes the chaincode to verify the network is up and running.
 
 Verify that that output ends with something similar to:
 ```
@@ -131,9 +131,9 @@ To run the UI, follow the setup steps in https://github.com/in-the-keyhole/keyho
 
 # NodeJS Scripts 
 
-* There are also Nodejs scripts defined in the `nodejs_scripts` folder. These scripts will use the fabric-node-sdk to invoke chaincode. You can create, retrieve, and change states of labs with the scripts. 
+* There are also Node.js scripts defined in the `nodejs_scripts` folder. These scripts will use the fabric-node-sdk to invoke chaincode. You can create, retrieve, and change states of labs with the scripts. 
 
-Here's how to create a lab in the Influenza or Covid lab Channels script can be run 
+Here's how to create a lab in the Influenza or COVID-19 lab Channels script can be run 
 
 ```
     $ node createLab.js
@@ -159,9 +159,9 @@ Change status for a lab to recovered
 
 # Compiling and Unit Testing Go Chaincode with the Development CLI 
 
-Chaincode is implemented using the Go Language, which is what Hyperledger is built with. Here's how a Docker-based Go development environment can be started with chaincode that was developed and tested outside of Hyperledger. 
+Chaincode is implemented using the Go language, which is what Hyperledger is built with. Here's how a Docker-based Go development environment can be started with chaincode that was developed and tested outside of Hyperledger. 
 
-Chaincode (i.e Go implementation) can be found at this location: `chaincodes/lab/lab.go`.
+Chaincode (i.e. Go implementation) can be found at this location: `chaincodes/lab/lab.go`.
 
 * Stop and remove running Hyperledger Docker instances with following commands:
 
