@@ -1,8 +1,10 @@
 # Keyhole Virus Tracker Blockchain
 
-This project implements a HyperLedger blockchain network with chaincode that manages a ledger of COVID-19 and Influenza virus lab results. The chaincode implements functions to create and retrieve test results.  
+This project implements a HyperLedger Fabric blockchain network with chaincode that manages a ledger of COVID-19 and Influenza virus lab results. The chaincode implements functions to create and retrieve test results.  
 
 It also references a React client project and supporting API Gateway project that provides a user interface to interact with a deployed blockchain.
+
+> This blockchain implementation (and why it's an excellent solution for the dissemination and tracking of lab data) is described in detail by this recent free white paper: [Tracking Lab Results Better With Blockchain Technology](https://keyholesoftware.com/company/creations/white-papers/blockchain-virus-tracker/).
 
 The instructions will start a Hyperledger network locally on a Linux, Unix, MacOS, or Windows operating system, and then invoke and access the blockchain chaincode in the following ways:
 
