@@ -42,7 +42,7 @@
     "react-radio-buttons": "^1.2.2",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
-    "react-scripts": "^1.0.8",
+    "react-scripts": "^5.0.1",
     "react-upload-file": "^2.0.0-beta.6",
     "react-validation": "^3.0.7"
   }
